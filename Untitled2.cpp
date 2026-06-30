@@ -10,7 +10,7 @@ struct operasi {
     int hargaJual, hargaBeli, jumlahBarang, kodeRak;
 };
 
-// Variabel Global untuk Keuangan (Hadi)
+// Variabel Global untuk Keuangan
 string sumber[100];
 string tanggalMasuk[100];
 double jumlahMasuk[100];
@@ -29,6 +29,9 @@ void BarangKeluar();
 void HapusBarang();
 void lihatBarang(); 
 
+void loadDataGudang(operasi data[], int &jml);
+void updateFileGudang(operasi data[], int jml);
+
 void pemasukan();
 void pengeluaran();
 void liatpemasukan();
@@ -36,7 +39,7 @@ void liatpengeluaran();
 void keuntungan();
 void belanjaOnline(); 
 
-// === CLASS LOGIN & AKUN ===
+// === MENU MASUK ===
 class awal {
 private:
     string username, password;
@@ -60,7 +63,6 @@ public:
         return 0;
     }
 
-    // Fungsi Registrasi Pelanggan
     void buatAkunPelanggan() {
         string userBaru, passBaru;
         cout << "\n--- BUAT AKUN BARU PELANGGAN ---\n";
@@ -79,8 +81,8 @@ public:
         }
         system("pause");
     }
-
-    // Fungsi Login Pelanggan via TXT
+	
+	// ==== LOGIN PELANGGAN ROSHYAN ====
     int loginPelanggan() {
         string userLogin, passLogin;
         cout << "\n--- MASUK AKUN PELANGGAN ---\n";
@@ -107,7 +109,6 @@ public:
         else return 0;
     }
 
-    // Mengubah Username atau Password Pelanggan di Database
     void ubahAkunPelanggan() {
         string userLama, passLama, userBaru, passBaru;
         cout << "\n--- UBAH DATA AKUN PELANGGAN ---\n";
@@ -162,7 +163,7 @@ public:
     }
 };
 
-// === FITUR KASIR (ROSYAN) ===
+// === FITUR KASIR ROSHYAN===
 void kasir() {
     system("cls");
     string nama[100];
@@ -226,12 +227,12 @@ void kasir() {
     cout << "UANG       : " << bayar << endl;
     cout << "KEMBALIAN  : " << kembalian << endl;
     cout << "----------------------------------------\n";
-    cout << "     TERIMA KASIH ATAS KUNJUNGAN ANDA\n";
+    cout << "       TERIMA KASIH ATAS KUNJUNGAN ANDA\n";
     cout << "========================================\n";
     system("pause");
 }
 
-// === FITUR KEUANGAN (HADI) ===
+// === FITUR KEUANGAN HADI===
 void keuangan() {
     int PilihMK;
     do {
@@ -280,7 +281,7 @@ void liatpemasukan() {
     system("pause");
 }
 
-// === FITUR GUDANG (NABIL) ===
+// === FITUR GUDANG NABIL===
 void menyimpan(operasi barang[], int jumlahData) {
     ofstream filemasuk("Data Gudang.txt", ios::app);
     if (filemasuk) {
@@ -303,7 +304,7 @@ void gudang() {
     do {
         system("cls");
         cout << "=== Selamat Datang Admin Gudang ===\n";
-        cout << "1. Kartu Stok\n";
+        cout << "1. Kelola Barang\n";
         cout << "2. Klasifikasi Kategori\n";
         cout << "3. Klasifikasi Rak\n";
         cout << "4. Manajemen Stok Minimum\n";
@@ -323,19 +324,22 @@ void gudang() {
 }
 
 void KartuStok() {
-    system("cls");
     int PilihKS;
-    cout << "=== Kartu Stok ===\n";
-    cout << "1. Barang Masuk \n";
-    cout << "2. Barang Keluar\n";
-    cout << "3. Hapus Data Barang\n";
-    cout << "Pilihan: ";
-    cin >> PilihKS;
-    switch (PilihKS) {
-        case 1: BarangMasuk(); break;
-        case 2: BarangKeluar(); break;
-        case 3: HapusBarang(); break;
-    }
+    do {
+        system("cls");
+        cout << "=== Kelola Barang ===\n";
+        cout << "1. Barang Masuk \n";
+        cout << "2. Barang Keluar\n";
+        cout << "3. Hapus Data Barang\n";
+        cout << "4. Kembali\n";
+        cout << "Pilihan: ";
+        cin >> PilihKS;
+        switch (PilihKS) {
+            case 1: BarangMasuk(); break;
+            case 2: BarangKeluar(); break;
+            case 3: HapusBarang(); break;
+        }
+    } while (PilihKS != 4);
 }
 
 void BarangMasuk() {
@@ -344,7 +348,7 @@ void BarangMasuk() {
     operasi barang[slotPerRak]; 
     int jumlahRak;
     
-    cout << "=== Sistem Inventaris Rak Otomatis ===\n";
+    cout << "=== Sistem Pemyimpanan Barang ===\n";
     cout << "Setiap Rak Memiliki 10 Ruangan Untuk Menampung Data" << endl;
     cout << "Berapa banyak rak yang ingin Anda isi? : ";
     cin >> jumlahRak;
@@ -396,6 +400,128 @@ void BarangMasuk() {
     system("pause");
 }
 
+// MODIFIKASI: Menampilkan list database terlebih dahulu sebelum proses Barang Keluar
+void BarangKeluar() {
+    system("cls");
+    operasi listBarang[1000];
+    int totalBarang = 0;
+    
+    loadDataGudang(listBarang, totalBarang);
+
+    cout << "=== FITUR BARANG KELUAR (STOK GUDANG) ===\n\n";
+    cout << "Daftar Barang Saat Ini:\n";
+    cout << "-------------------------------------------------------\n";
+    if (totalBarang == 0) {
+        cout << "Gudang Kosong / Belum ada data.\n";
+        cout << "-------------------------------------------------------\n";
+        system("pause");
+        return;
+    }
+
+    for (int i = 0; i < totalBarang; i++) {
+        cout << i + 1 << ". Kode: " << listBarang[i].kodeBarang 
+             << " | Nama: " << listBarang[i].namaBarang 
+             << " | Kategori: " << listBarang[i].kategoriBarang 
+             << " | Stok: " << listBarang[i].jumlahBarang << endl;
+    }
+    cout << "-------------------------------------------------------\n\n";
+
+    string kodeTarget;
+    int qtyKeluar;
+    cout << "Masukkan Kode Barang yang keluar: ";
+    cin >> kodeTarget;
+
+    bool ditemukan = false;
+    for (int i = 0; i < totalBarang; i++) {
+        if (listBarang[i].kodeBarang == kodeTarget) {
+            ditemukan = true;
+            cout << "\nBarang Ditemukan:\n";
+            cout << "-> Nama Barang : " << listBarang[i].namaBarang << endl;
+            cout << "-> Stok Gudang : " << listBarang[i].jumlahBarang << endl;
+            cout << "Masukkan Jumlah Barang Keluar : ";
+            cin >> qtyKeluar;
+
+            if (qtyKeluar > listBarang[i].jumlahBarang) {
+                cout << "\n[ERROR]: Jumlah barang keluar melebihi sisa stok gudang!\n";
+            } else if (qtyKeluar <= 0) {
+                cout << "\n[ERROR]: Jumlah keluar harus lebih dari 0!\n";
+            } else {
+                listBarang[i].jumlahBarang -= qtyKeluar;
+                updateFileGudang(listBarang, totalBarang);
+                cout << "\n[SISTEM]: Berhasil! Stok di gudang telah dikurangi.\n";
+            }
+            break;
+        }
+    }
+
+    if (!ditemukan) {
+        cout << "\n[SISTEM]: Kode barang tidak ditemukan di database gudang.\n";
+    }
+    system("pause");
+}
+
+void HapusBarang() {
+    system("cls");
+    operasi listBarang[1000];
+    int totalBarang = 0;
+    
+    loadDataGudang(listBarang, totalBarang);
+
+    cout << "=== FITUR HAPUS DATA BARANG GUDANG ===\n\n";
+    cout << "Daftar Barang Saat Ini:\n";
+    cout << "-------------------------------------------------------\n";
+    if (totalBarang == 0) {
+        cout << "Gudang Kosong / Belum ada data.\n";
+        cout << "-------------------------------------------------------\n";
+        system("pause");
+        return;
+    }
+
+    for (int i = 0; i < totalBarang; i++) {
+        cout << i + 1 << ". Kode: " << listBarang[i].kodeBarang 
+             << " | Nama: " << listBarang[i].namaBarang 
+             << " | Kategori: " << listBarang[i].kategoriBarang 
+             << " | Stok: " << listBarang[i].jumlahBarang << endl;
+    }
+    cout << "-------------------------------------------------------\n\n";
+
+    string kodeTarget;
+    cout << "Masukkan Kode Barang yang ingin dihapus: ";
+    cin >> kodeTarget;
+
+    int indeksTarget = -1;
+    for (int i = 0; i < totalBarang; i++) {
+        if (listBarang[i].kodeBarang == kodeTarget) {
+            indeksTarget = i;
+            break;
+        }
+    }
+
+    if (indeksTarget != -1) {
+        int opsiKonfirmasi;
+        cout << "\n[KONFIRMASI]: Apakah Anda yakin menghapus [" << listBarang[indeksTarget].namaBarang << "]?\n";
+        cout << "1. Lanjut menghapus barang\n";
+        cout << "2. Tidak melanjutkan menghapus barang\n";
+        cout << "Pilihan Anda (1-2): ";
+        cin >> opsiKonfirmasi;
+
+        if (opsiKonfirmasi == 1) {
+            for (int i = indeksTarget; i < totalBarang - 1; i++) {
+                listBarang[i] = listBarang[i + 1];
+            }
+            totalBarang--; 
+
+            updateFileGudang(listBarang, totalBarang);
+            cout << "\n[SISTEM]: Data barang sukses dihapus secara permanen dari database gudang!\n";
+        } else {
+            cout << "\n[SISTEM]: Tindakan dibatalkan. Data aman.\n";
+        }
+    } else {
+        cout << "\n[SISTEM]: Kode barang tidak terdaftar!\n";
+    }
+    system("pause");
+}
+
 void lihatBarang() {
     system("cls");
     ifstream filebaca("Data Gudang.txt");
@@ -419,23 +545,59 @@ void lihatBarang() {
     system("pause");
 }
 
-// === FUNGSI RESERVED ===
-void pengeluaran() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
-void liatpengeluaran() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
-void keuntungan() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
-void BarangKeluar() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
-void HapusBarang() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
-void KKategori() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
-void KRak() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
-void SMinimum() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
+// === IMPLEMENTASI LOGIKA PARSER DATABASE ===
+void loadDataGudang(operasi data[], int &jml) {
+    ifstream file("Data Gudang.txt");
+    jml = 0;
+    if (!file.is_open()) return;
 
-// === Halaman Belanja Online Berdasarkan Kategori ===
+    string line;
+    operasi temp;
+    while (getline(file, line)) {
+        size_t pos = line.find(":");
+        if (pos != string::npos) {
+            string value = line.substr(pos + 2); 
+            
+            if (line.find("Nama Barang") != string::npos) temp.namaBarang = value;
+            else if (line.find("Kategori Barang") != string::npos) temp.kategoriBarang = value;
+            else if (line.find("Kode Barang") != string::npos) temp.kodeBarang = value;
+            else if (line.find("Harga Jual Barang") != string::npos) temp.hargaJual = stoi(value);
+            else if (line.find("Jumlah Barang") != string::npos) temp.jumlahBarang = stoi(value);
+            else if (line.find("Nomor Rak") != string::npos) temp.kodeRak = stoi(value);
+        }
+        
+        if (line.find("---------------------------------") != string::npos) {
+            data[jml] = temp;
+            jml++;
+            if (jml >= 1000) break;
+        }
+    }
+    file.close();
+}
+
+void updateFileGudang(operasi data[], int jml) {
+    ofstream file("Data Gudang.txt"); 
+    if (file.is_open()) {
+        for (int i = 0; i < jml; i++) {
+            file << "Nama Barang\t\t: " << data[i].namaBarang << endl;
+            file << "Kategori Barang\t\t: " << data[i].kategoriBarang << endl;
+            file << "Kode Barang\t\t: " << data[i].kodeBarang << endl;
+            file << "Harga Jual Barang\t: " << data[i].hargaJual << endl;
+            file << "Jumlah Barang\t\t: " << data[i].jumlahBarang << endl;
+            file << "Nomor Rak\t\t: " << data[i].kodeRak << endl;
+            file << "---------------------------------\n";
+        }
+        file.close();
+    }
+}
+
+// === Pelanggan ===
 void belanjaOnline() {
     int pilihKat;
     do {
         system("cls");
         cout << "=======================================\n";
-        cout << "          HALAMAN BELANJA ONLINE       \n";
+        cout << "         HALAMAN BELANJA ONLINE        \n";
         cout << "=======================================\n";
         cout << " Kategori Produk:\n";
         cout << " 1. Makanan\n";
@@ -508,7 +670,16 @@ void belanjaOnline() {
     } while (pilihKat != 8);
 }
 
-// === MAIN SYSTEM ===
+// === FUNGSI BELUM TERSEDIA ===
+void pengeluaran() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
+void liatpengeluaran() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
+void keuntungan() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
+void KKategori() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
+void KRak() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
+void SMinimum() { cout << "Fitur Belum Tersedia\n"; system("pause"); }
+
+
+// === Menu Masuk ===
 int main() {
     awal program;
     int menuUtama, menuPelanggan, menuKaryawan;
@@ -517,7 +688,7 @@ int main() {
     do {
         system("cls");
         cout << "+=====================================+\n";
-        cout << "|      Selamat Datang di Toko         |\n";
+        cout << "|       Selamat Datang di Toko        |\n";
         cout << "+=====================================+\n";
         cout << "Keterangan Toko:\n";
         cout << "Menyediakan semua kebutuhan harian Anda secara offline.\n";
@@ -534,7 +705,6 @@ int main() {
             break;
         }
 
-        // --- PILIHAN 1: PELANGGAN ---
         if (menuUtama == 1) {
             do {
                 system("cls");
@@ -551,7 +721,6 @@ int main() {
                 } 
                 else if (menuPelanggan == 2) {
                     int punyaAkun;
-                    // Intersepsi Peringatan Sebelum Masuk Loop Sesuai Permintaan
                     cout << "\n+=====================================+\n";
                     cout << "  [PERINGATAN]: Belum punya akun?\n";
                     cout << "  1. Belum (Daftar Akun Baru)\n";
@@ -561,11 +730,9 @@ int main() {
                     cin >> punyaAkun;
 
                     if (punyaAkun == 1) {
-                        // Langsung diarahkan ke fitur pembuatan akun baru
                         program.buatAkunPelanggan();
                     } 
                     else if (punyaAkun == 2) {
-                        // Masuk ke proses input login dengan looping penanganan kesalahan
                         int loginCust = 0;
                         while (true) {
                             loginCust = program.loginPelanggan();
@@ -588,7 +755,6 @@ int main() {
                 }
             } while (menuPelanggan != 4);
         }
-        // --- PILIHAN 2: KARYAWAN ---
         else if (menuUtama == 2) {
             do {
                 system("cls");
@@ -601,19 +767,34 @@ int main() {
                 cin >> menuKaryawan;
 
                 if (menuKaryawan >= 1 && menuKaryawan <= 3) {
-                    program.inputAkun();
-                    statusLogin = program.Login(menuKaryawan);
+                    while (true) { 
+                        program.inputAkun();
+                        statusLogin = program.Login(menuKaryawan);
 
-                    if (statusLogin != 0) {
-                        if (statusLogin == 1) kasir();
-                        else if (statusLogin == 2) keuangan();
-                        else if (statusLogin == 3) gudang();
-                        statusLogin = 0; 
-                    } else {
-                        cout << "\nUsername atau Password Salah untuk Role tersebut!\n";
-                        system("pause");
+                        if (statusLogin != 0) {
+                            if (statusLogin == 1) kasir();
+                            else if (statusLogin == 2) keuangan();
+                            else if (statusLogin == 3) gudang();
+                            statusLogin = 0; 
+                            break; 
+                        } else {
+                            char cobaLagi;
+                            cout << "\n[SISTEM]: Username atau Password Salah untuk Role tersebut!\n";
+                            cout << "Apakah ingin mencoba login kembali? (y/n): ";
+                            cin >> cobaLagi;
+                            
+                            if (cobaLagi == 'n' || cobaLagi == 'N') {
+                                break; 
+                            }
+                            system("cls");
+                            cout << "=== VERIFIKASI ULANG KARYAWAN ===\n";
+                        }
                     }
-                } else if (menuKaryawan != 4) {
+                } 
+                else if (menuKaryawan == 4) {
+                    break; 
+                }
+                else {
                     cout << "Pilihan tidak valid!\n";
                     system("pause");
                 }
