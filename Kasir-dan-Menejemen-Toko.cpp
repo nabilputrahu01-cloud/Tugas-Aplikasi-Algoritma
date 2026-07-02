@@ -63,7 +63,7 @@ public:
     }
 
     int Login(int roleTerpilih) {
-    if (roleTerpilih == 1 && username == "Rosyhan" && password == "#111") return 4;
+    if (roleTerpilih == 1 && username == "Rosyhan" && password == "#111") return 1;
     if (roleTerpilih == 2 && username == "Hadi" && password == "#141") return 2;
     
     
@@ -386,109 +386,55 @@ public:
 	}
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//=================================
+//=== CLASS ADMIN KEUANGAN HADI ===
+//=================================
+
 //=== CLASS ADMIN KEUANGAN HADI ===
 class AdminKeuangan {
 private:
-	//===========
-	void cariPengeluaran() {
+//==============
+//INPUT DATA
+//==============
 
-    ifstream file("DataPengeluaran.txt");
-
-    string tujuan;
-    string tanggal;
-    string cariTanggal;
-    long long jumlah;
-
-    bool ketemu = false;
-
-    cout << "Masukkan tanggal yang dicari : ";
-    cin >> cariTanggal;
-
-    while (getline(file, tujuan, '|')) {
-
-        getline(file, tanggal, '|');
-
-        file >> jumlah;
-        file.ignore();
-
-        if (tanggal == cariTanggal) {
-
-            cout << "==============================" << endl;
-            cout << "Tujuan   : " << tujuan << endl;
-            cout << "Tanggal  : " << tanggal << endl;
-            cout << "Jumlah   : Rp " << jumlah << endl;
-
-            ketemu = true;
-        }
-    }
-
-    file.close();
-
-    if (ketemu == false) {
-        cout << "Data tidak ditemukan." << endl;
-    }
-
-    system("pause");
-}
-
-	//=========
-	void cariPemasukan() {
-
-    ifstream file("DataPemasukan.txt");
-
-    string sumber;
-    string tanggal;
-    string cariTanggal;
-    long long jumlah;
-
-    bool ketemu = false;
-
-    cout << "Masukkan tanggal yang dicari : ";
-    cin >> cariTanggal;
-
-    while (getline(file, sumber, '|')) {
-
-        getline(file, tanggal, '|');
-
-        file >> jumlah;
-        file.ignore();
-
-        if (tanggal == cariTanggal) {
-
-            cout << "==============================" << endl;
-            cout << "Sumber   : " << sumber << endl;
-            cout << "Tanggal  : " << tanggal << endl;
-            cout << "Jumlah   : Rp " << jumlah << endl;
-
-            ketemu = true;
-        }
-    }
-
-    file.close();
-
-    if (!ketemu) {
-
-        cout << "Data tidak ditemukan." << endl;
-
-    }
-
-    system("pause");
-}
-	
-	//===========
-    void pemasukan() {
-
-    cout << "=== INPUT PEMASUKAN ===" << endl;
-
+//===INPUT PEMASUKAN===
+void pemasukan() {
     string sumber;
     string tanggal;
     long long jumlah;
 
+	cout << "=== INPUT PEMASUKAN ===" << endl;
     cout << "Sumber pemasukan : ";
     cin.ignore();
     getline(cin, sumber);
-
-    cout << "Tanggal : ";
+    cout << "Tanggal pemasukan : ";
     cin >> tanggal;
 
     do {
@@ -498,91 +444,41 @@ private:
         if (jumlah <= 0) {
             cout << "Jumlah harus lebih dari 0!" << endl;
         }
-
     } while (jumlah <= 0);
 
     ofstream file("DataPemasukan.txt", ios::app);
 
     if (file.is_open()) {
-
         file << sumber
              << "|"
              << tanggal
              << "|"
              << jumlah
              << endl;
-
         file.close();
     }
 
     cout << "Data pemasukan berhasil disimpan!" << endl;
     system("pause");
 }
-//=============
-    void liatpemasukan() {
 
-    ifstream file("DataPemasukan.txt");
-
-    string sumberFile;
-    string tanggalFile;
-    long long jumlahFile;
-
-    int nomor = 1;
-
-    if (file.is_open()) {
-
-        while (getline(file, sumberFile, '|')) {
-
-            getline(file, tanggalFile, '|');
-
-            file >> jumlahFile;
-
-            file.ignore();
-
-            cout << "==============================" << endl;
-            cout << "Data Pemasukan ke-" << nomor << endl;
-            cout << "Sumber   : " << sumberFile << endl;
-            cout << "Tanggal  : " << tanggalFile << endl;
-            cout << "Nominal  : Rp " << jumlahFile << endl;
-
-            nomor++;
-        }
-
-        file.close();
-    }
-
-    else {
-
-        cout << "File belum tersedia." << endl;
-
-    }
-
-    system("pause");
-}
-
-
-
-//===============
-    void pengeluaran() {
-
-    cout << "=== INPUT PENGELUARAN ===" << endl;
-
+//===INPUT PENGELUARAN===
+void pengeluaran() {
     string tujuan;
     string tanggal;
     long long jumlah;
 
+	cout << "=== INPUT PENGELUARAN ===" << endl;
     cout << "Tujuan pengeluaran : ";
     cin.ignore();
     getline(cin, tujuan);
 
-    cout << "Tanggal            : ";
+    cout << "Tanggal pengeluaran : ";
     cin >> tanggal;
 
     do {
-
         cout << "Jumlah             : ";
         cin >> jumlah;
-
         if (jumlah <= 0) {
             cout << "Jumlah harus lebih dari 0!" << endl;
         }
@@ -602,99 +498,468 @@ private:
 
         file.close();
     }
-
     cout << "Data pengeluaran berhasil disimpan!" << endl;
-
     system("pause");
 }
-	
-	//=================
-	void liatpengeluaran() {
 
-    ifstream file("DataPengeluaran.txt");
 
+//==============
+//LIHAT DATA
+//==============
+
+//===LIHAT PEMASUKAN===
+void liatpemasukan() {
+    string sumberFile;
+    string tanggalFile;
+    long long jumlahFile;
+    
+    ifstream file("DataPemasukan.txt");
+
+    int nomor = 1;
+
+    if (file.is_open()) {
+
+        while (getline(file, sumberFile, '|')) {
+	           getline(file, tanggalFile, '|');
+	    	   file >> jumlahFile;
+
+		file.ignore(1000, '\n');
+            cout << "==============================" << endl;
+            cout << "Data Pemasukan ke-" << nomor << endl;
+            cout << "Sumber   : " << sumberFile << endl;
+            cout << "Tanggal  : " << tanggalFile << endl;
+            cout << "Nominal  : Rp " << jumlahFile << endl;
+            nomor++;
+        }
+        file.close();
+    }
+    else {
+        cout << "File belum tersedia." << endl;
+    }
+    system("pause");
+}
+
+//===LIHAT PENGELUARAN===
+void liatpengeluaran() {
     string tujuanFile;
     string tanggalFile;
     long long jumlahFile;
+    
+    ifstream file("DataPengeluaran.txt");
 
     int nomor = 1;
 
     if (file.is_open()) {
 
         while (getline(file, tujuanFile, '|')) {
-
-            getline(file, tanggalFile, '|');
-
-            file >> jumlahFile;
-            file.ignore();
+               getline(file, tanggalFile, '|');
+               file >> jumlahFile;
+		file.ignore(1000, '\n');
 
             cout << "==============================" << endl;
             cout << "Data Pengeluaran ke-" << nomor << endl;
             cout << "Tujuan   : " << tujuanFile << endl;
             cout << "Tanggal  : " << tanggalFile << endl;
             cout << "Nominal  : Rp " << jumlahFile << endl;
-
             nomor++;
         }
-
         file.close();
     }
-
     else {
+        cout << "File belum tersedia." << endl;
+    }
+    system("pause");
+}
+
+
+//==============
+//CARI DATA
+//==============
+
+//===CARI PEMASUKAN BERDASARKAN NAMA===
+void cariNamaPemasukan() {
+    ifstream file("DataPemasukan.txt");
+
+    string sumber;
+    string tanggal;
+    string cariNama;
+    long long jumlah;
+
+    bool ketemu = false;
+
+    cout << "Masukkan nama sumber : ";
+    cin.ignore();
+    getline(cin, cariNama);
+
+    while (getline(file, sumber, '|')) {
+        getline(file, tanggal, '|');
+
+        file >> jumlah;
+		file.ignore(1000, '\n');
+
+        if (sumber == cariNama) {
+
+            cout << "==============================" << endl;
+            cout << "Sumber   : " << sumber << endl;
+            cout << "Tanggal  : " << tanggal << endl;
+            cout << "Jumlah   : Rp " << jumlah << endl;
+
+            ketemu = true;
+        }
+    }
+
+    file.close();
+
+    if (!ketemu) {
+        cout << "Data tidak ditemukan." << endl;
+    }
+    system("pause");
+}
+
+//CARI PENGELUARAN BERDASARKAN NAMA
+void cariNamaPengeluaran() {
+    ifstream file("DataPengeluaran.txt");
+    
+    if (!file.is_open()) {
+    cout << "File DataPemasukan.txt tidak dapat dibuka!" << endl;
+    system("pause");
+    return;
+}
+
+    string tujuan;
+    string tanggal;
+    string cariNama;
+    long long jumlah;
+
+    bool ketemu = false;
+
+    cout << "Masukkan nama tujuan : ";
+    cin.ignore();
+    getline(cin, cariNama);
+
+    while (getline(file, tujuan, '|')) {
+        getline(file, tanggal, '|');
+
+       file >> jumlah;
+	   file.ignore(1000, '\n');
+
+        if (tujuan == cariNama) {
+            cout << "==============================" << endl;
+            cout << "Tujuan   : " << tujuan << endl;
+            cout << "Tanggal  : " << tanggal << endl;
+            cout << "Jumlah   : Rp " << jumlah << endl;
+
+            ketemu = true;
+        }
+    }
+
+    file.close();
+
+    if (!ketemu) {
+        cout << "Data tidak ditemukan." << endl;
+    }
+    system("pause");
+}
+
+//===CARI PENGELUARAN BERDASARKAN TANGGAL===
+void cariPengeluaran() {
+    ifstream file("DataPengeluaran.txt");
+    
+    if (!file.is_open()) {
+    cout << "File DataPengeluaran.txt tidak dapat dibuka!" << endl;
+    system("pause");
+    return;
+}
+		if (!file.is_open()) {
+		    cout << "File DataPengeluaran.txt tidak dapat dibuka!" << endl;
+		    system("pause");
+		    return;
+		}
+		
+		string tujuan;
+		string tanggal;
+		string cariTanggal;
+		long long jumlah;
+		
+		bool ketemu = false;
+		
+		    cout << "Masukkan tanggal yang dicari : ";
+		    cin >> cariTanggal;
+		
+		    while (getline(file, tujuan, '|')) {
+		
+		        getline(file, tanggal, '|');
+		
+		    file >> jumlah;
+			file.ignore(1000, '\n');
+		
+		if (tanggal == cariTanggal) {
+		
+		            cout << "==============================" << endl;
+		            cout << "Tujuan   : " << tujuan << endl;
+		            cout << "Tanggal  : " << tanggal << endl;
+		            cout << "Jumlah   : Rp " << jumlah << endl;
+		
+		            ketemu = true;
+		        }
+		    }
+		    file.close();
+		
+		    if (ketemu == false) {
+		        cout << "Data tidak ditemukan." << endl;
+		    }
+		    system("pause");
+}
+
+//CARI PEMASUKAN BERDASARKAN TANGGAL
+void cariPemasukan() {
+
+    ifstream file("DataPemasukan.txt");
+
+if (!file.is_open()) {
+    cout << "File DataPemasukan.txt tidak dapat dibuka!" << endl;
+    system("pause");
+    return;
+}
+	string sumber;
+	string tanggal;
+	string cariTanggal;
+	long long jumlah;
+		
+	bool ketemu = false;
+
+    cout << "Masukkan tanggal yang dicari : ";
+    cin >> cariTanggal;
+
+    while (getline(file, sumber, '|')) {
+        getline(file, tanggal, '|');
+        
+        file >> jumlah;
+		file.ignore(1000, '\n');
+
+	if (tanggal == cariTanggal) {
+            cout << "==============================" << endl;
+            cout << "Sumber   : " << sumber << endl;
+            cout << "Tanggal  : " << tanggal << endl;
+            cout << "Jumlah   : Rp " << jumlah << endl;
+
+            ketemu = true;
+        }
+    }
+    file.close();
+
+    if (!ketemu) {
+        cout << "Data tidak ditemukan." << endl;
+    }
+    system("pause");
+}
+
+
+//==============
+//KEUANGAN TOKO
+//==============
+
+//===PEMASUKAN TERBESAR===
+void pemasukanTerbesar() {
+    ifstream file("DataPemasukan.txt");
+
+    if (!file.is_open()) {
 
         cout << "File belum tersedia." << endl;
+        system("pause");
+        return;
+    }
+
+    string sumber;
+    string tanggal;
+
+    string sumberTerbesar;
+    string tanggalTerbesar;
+
+    long long jumlah;
+    long long jumlahTerbesar = 0;
+
+    bool adaData = false;
+
+    while (getline(file, sumber, '|')) {
+
+        getline(file, tanggal, '|');
+
+        file >> jumlah;
+        file.ignore(1000, '\n');
+
+        if (adaData == false || jumlah > jumlahTerbesar) {
+
+            jumlahTerbesar = jumlah;
+            sumberTerbesar = sumber;
+            tanggalTerbesar = tanggal;
+
+            adaData = true;
+        }
+    }
+
+    file.close();
+
+    if (adaData == true) {
+        cout << "==============================" << endl;
+        cout << "   PEMASUKAN TERBESAR" << endl;
+        cout << "==============================" << endl;
+        cout << "Sumber   : " << sumberTerbesar << endl;
+        cout << "Tanggal  : " << tanggalTerbesar << endl;
+        cout << "Jumlah   : Rp " << jumlahTerbesar << endl;
+    }
+    else {
+        cout << "Data pemasukan masih kosong." << endl;
+    }
+    system("pause");
+
+}
+
+//===PENGELUARAN TERBESAR===
+void pengeluaranTerbesar() {
+
+    ifstream file("DataPengeluaran.txt");
+
+    if (!file.is_open()) {
+
+        cout << "File belum tersedia." << endl;
+        system("pause");
+        return;
 
     }
+
+    string tujuan;
+    string tanggal;
+
+    string tujuanTerbesar;
+    string tanggalTerbesar;
+
+    long long jumlah;
+    long long jumlahTerbesar = 0;
+
+    bool adaData = false;
+
+    while (getline(file, tujuan, '|')) {
+
+        getline(file, tanggal, '|');
+
+        file >> jumlah;
+        file.ignore(1000, '\n');
+
+        if (adaData == false || jumlah > jumlahTerbesar) {
+            jumlahTerbesar = jumlah;
+            tujuanTerbesar = tujuan;
+            tanggalTerbesar = tanggal;
+
+            adaData = true;
+        }
+    }
+
+    file.close();
+
+    if (adaData == true) {
+        cout << "==============================" << endl;
+        cout << "  PENGELUARAN TERBESAR" << endl;
+        cout << "==============================" << endl;
+        cout << "Tujuan   : " << tujuanTerbesar << endl;
+        cout << "Tanggal  : " << tanggalTerbesar << endl;
+        cout << "Jumlah   : Rp " << jumlahTerbesar << endl;
+    }
+    else {
+        cout << "Data pengeluaran masih kosong." << endl;
+    }
+    system("pause");
+}
+
+//===LIHAT SALDO TOKO===
+void lihatSaldo() {
+    long long totalMasuk = 0;
+    long long totalKeluar = 0;
+    string sumber;
+    string tujuan;
+    string tanggal;
+    long long jumlah;
+
+    ifstream fileMasuk("DataPemasukan.txt");
+
+    if (fileMasuk.is_open()) {
+        while (getline(fileMasuk, sumber, '|')) {
+            getline(fileMasuk, tanggal, '|');
+
+            fileMasuk >> jumlah;
+            fileMasuk.ignore(1000, '\n');
+
+            totalMasuk = totalMasuk + jumlah;
+        }
+        fileMasuk.close();
+    }
+
+    ifstream fileKeluar("DataPengeluaran.txt");
+
+    if (fileKeluar.is_open()) {
+
+        while (getline(fileKeluar, tujuan, '|')) {
+            getline(fileKeluar, tanggal, '|');
+            fileKeluar >> jumlah;
+            fileKeluar.ignore(1000, '\n');
+
+            totalKeluar = totalKeluar + jumlah;
+        }
+        fileKeluar.close();
+    }
+
+    cout << "==============================" << endl;
+    cout << "        SALDO TOKO" << endl;
+    cout << "==============================" << endl;
+    cout << "Total Pemasukan   : Rp " << totalMasuk << endl;
+    cout << "Total Pengeluaran : Rp " << totalKeluar << endl;
+    cout << "------------------------------" << endl;
+    cout << "Saldo Saat Ini    : Rp " << totalMasuk - totalKeluar << endl;
 
     system("pause");
 }
-	
-	//==============================
-    void keuntungan() {
+
+//===STATUS KEUNTUNGAN TOKO===
+void keuntungan() {
     long long totalMasuk = 0;
 	long long totalKeluar = 0;
 	long long untung;
 		
-		ifstream fileMasuk("DataPemasukan.txt");
+	ifstream fileMasuk("DataPemasukan.txt");
 		
-		string sumberFile;
-		string tanggalFile;
-		long long jumlahFile;
+	string sumberFile;
+	string tanggalFile;
+	long long jumlahFile;
 		
-		if (fileMasuk.is_open()) {
+	if (fileMasuk.is_open()) {
 		
-		    while (getline(fileMasuk, sumberFile, '|')) {
+	while (getline(fileMasuk, sumberFile, '|')) {
+		   getline(fileMasuk, tanggalFile, '|');
 		
-		        getline(fileMasuk, tanggalFile, '|');
-		
-		        fileMasuk >> jumlahFile;
-		        fileMasuk.ignore();
-		
-		        totalMasuk = totalMasuk + jumlahFile;
-		    }
-		
-		    fileMasuk.close();
-		}
+		fileMasuk >> jumlahFile;
+		fileMasuk.ignore(1000, '\n');
+			
+		totalMasuk = totalMasuk + jumlahFile;
+			}	
+		fileMasuk.close();
+			}
 		ifstream fileKeluar("DataPengeluaran.txt");
-		
+			
 		string tujuanFile;
 		string tanggalKeluarFile;
 		
-		if (fileKeluar.is_open()) {
+	if (fileKeluar.is_open()) {
+		while (getline(fileKeluar, tujuanFile, '|')) {
+			   getline(fileKeluar, tanggalKeluarFile, '|');
 		
-		    while (getline(fileKeluar, tujuanFile, '|')) {
+		fileKeluar >> jumlahFile;
+		fileKeluar.ignore(1000, '\n');
 		
-		        getline(fileKeluar, tanggalKeluarFile, '|');
-		
-		        fileKeluar >> jumlahFile;
-		        fileKeluar.ignore();
-		
-		        totalKeluar = totalKeluar + jumlahFile;
+		totalKeluar = totalKeluar + jumlahFile;
 		    }
-		
 		    fileKeluar.close();
 		}
-		    untung = totalMasuk - totalKeluar;
+		untung = totalMasuk - totalKeluar;
 		
 		    cout << "===== LAPORAN KEUANGAN =====" << endl;
 			cout << "Total Pemasukan   : Rp " << totalMasuk << endl;
@@ -709,61 +974,399 @@ private:
 			}
 			else {
 			    cout << "Status            : IMPAS" << endl;
-			}
-			
+			}	
 			system("pause");
 			}
 
+//==============
+//REKAP DATA
+//==============
 
+//===REKAB DATA BULANAN===
+void rekapBulanan() {
+    string bulan;
+    string tahun;
 
-//==========
-public:
-    AdminKeuangan() {
-       
-    }
+    cout << "===== REKAP BULANAN =====" << endl;
 
-    void jalankanKeuangan() {
-        int PilihMK;
-        do {
-            system("cls");
-            cout << "1. Input Pemasukan" << endl;
-			cout << "2. Input Pengeluaran" << endl;
-			cout << "3. Lihat Pemasukan" << endl;
-			cout << "4. Lihat Pengeluaran" << endl;
-			cout << "5. Laporan Keuangan" << endl;
-			cout << "6. Cari Pemasukan" << endl;
-			cout << "7. Cari Pengeluaran" << endl;
-			cout << "8. Kembali" << endl;
-            cout << "Pilihan : " << endl; 
-            cin >> PilihMK;
+    cout << "Masukkan Bulan (MM) : ";
+    cin >> bulan;
+    cout << "Masukkan Tahun (YYYY) : ";
+    cin >> tahun;
 
-            switch (PilihMK) {
-                case 1: 
-					pemasukan();
-					break;
-                case 2: 
-					pengeluaran(); 
-					break;
-                case 3: 
-					liatpemasukan(); 
-					break;
-                case 4: 
-					liatpengeluaran(); 
-					break;
-                case 5: 
-					keuntungan(); 
-					break;
-				case 6:
-				    cariPemasukan();
-				    break;
-				
-				case 7:
-				    cariPengeluaran();
-				    break;
+    long long totalMasuk = 0;
+    long long totalKeluar = 0;
+
+    ifstream fileMasuk("DataPemasukan.txt");
+
+    string sumber;
+    string tanggal;
+    long long jumlah;
+
+    cout << endl;
+    cout << "===== DATA PEMASUKAN =====" << endl;
+
+    if (fileMasuk.is_open()) {
+        while (getline(fileMasuk, sumber, '|')) {
+            getline(fileMasuk, tanggal, '|');
+
+            fileMasuk >> jumlah;
+            fileMasuk.ignore(1000, '\n');
+
+            if (tanggal.substr(3,2) == bulan &&
+                tanggal.substr(6,4) == tahun) {
+
+                cout << "Sumber  : " << sumber << endl;
+                cout << "Tanggal : " << tanggal << endl;
+                cout << "Jumlah  : Rp " << jumlah << endl;
+                cout << "--------------------------" << endl;
+
+                totalMasuk = totalMasuk + jumlah;
             }
-        } while (PilihMK != 8);
+        }
+        fileMasuk.close();
     }
+
+    ifstream fileKeluar("DataPengeluaran.txt");
+
+    string tujuan;
+
+    cout << endl;
+    cout << "===== DATA PENGELUARAN =====" << endl;
+
+    if (fileKeluar.is_open()) {
+        while (getline(fileKeluar, tujuan, '|')) {
+
+            getline(fileKeluar, tanggal, '|');
+
+            fileKeluar >> jumlah;
+            fileKeluar.ignore(1000, '\n');
+
+            if (tanggal.substr(3,2) == bulan &&
+                tanggal.substr(6,4) == tahun) {
+
+                cout << "Tujuan  : " << tujuan << endl;
+                cout << "Tanggal : " << tanggal << endl;
+                cout << "Jumlah  : Rp " << jumlah << endl;
+                cout << "--------------------------" << endl;
+
+                totalKeluar = totalKeluar + jumlah;
+            }
+        }
+        fileKeluar.close();
+    }
+
+    cout << endl;
+    cout << "===== HASIL REKAP =====" << endl;
+    cout << "Total Pemasukan   : Rp " << totalMasuk << endl;
+    cout << "Total Pengeluaran : Rp " << totalKeluar << endl;
+    cout << "Keuntungan        : Rp " << totalMasuk - totalKeluar << endl;
+
+    system("pause");
+}
+
+//===REKAB TAHUNAN===
+void rekapTahunan() {
+    string tahun;
+
+    cout << "===== REKAP TAHUNAN =====" << endl;
+    cout << "Masukkan Tahun (YYYY) : ";
+    cin >> tahun;
+
+    long long totalMasuk = 0;
+    long long totalKeluar = 0;
+
+    ifstream fileMasuk("DataPemasukan.txt");
+
+    string sumber;
+    string tanggal;
+    long long jumlah;
+
+    cout << endl;
+    cout << "===== DATA PEMASUKAN =====" << endl;
+
+    if (fileMasuk.is_open()) {
+        while (getline(fileMasuk, sumber, '|')) {
+            getline(fileMasuk, tanggal, '|');
+
+            fileMasuk >> jumlah;
+            fileMasuk.ignore(1000, '\n');
+
+            if (tanggal.substr(6,4) == tahun) {
+
+                cout << "Sumber  : " << sumber << endl;
+                cout << "Tanggal : " << tanggal << endl;
+                cout << "Jumlah  : Rp " << jumlah << endl;
+                cout << "--------------------------" << endl;
+                totalMasuk = totalMasuk + jumlah;
+            }
+        }
+        fileMasuk.close();
+    }
+
+    ifstream fileKeluar("DataPengeluaran.txt");
+
+    string tujuan;
+
+    cout << endl;
+    cout << "===== DATA PENGELUARAN =====" << endl;
+    if (fileKeluar.is_open()) {
+        while (getline(fileKeluar, tujuan, '|')) {
+            getline(fileKeluar, tanggal, '|');
+
+            fileKeluar >> jumlah;
+            fileKeluar.ignore(1000, '\n');
+
+            if (tanggal.substr(6,4) == tahun) {
+
+                cout << "Tujuan  : " << tujuan << endl;
+                cout << "Tanggal : " << tanggal << endl;
+                cout << "Jumlah  : Rp " << jumlah << endl;
+                cout << "--------------------------" << endl;
+
+                totalKeluar = totalKeluar + jumlah;
+            }
+        }
+        fileKeluar.close();
+    }
+
+    cout << endl;
+    cout << "===== HASIL REKAP =====" << endl;
+    cout << "Total Pemasukan   : Rp " << totalMasuk << endl;
+    cout << "Total Pengeluaran : Rp " << totalKeluar << endl;
+    cout << "Keuntungan        : Rp " << totalMasuk - totalKeluar << endl;
+
+    system("pause");
+}
+
+//==============
+//MENU PROGRAM DIATAS
+//==============
+
+//===MENU INPUT DATA===
+void menuInputData() {
+    int pilih;
+
+    do {
+        system("cls");
+
+        cout << "===== INPUT DATA =====" << endl;
+        cout << "1. Pemasukan" << endl;
+        cout << "2. Pengeluaran" << endl;
+        cout << "3. Kembali" << endl;
+        cout << "Pilihan : ";
+        cin >> pilih;
+
+        switch (pilih) {
+
+        case 1:
+            pemasukan();
+            break;
+        case 2:
+            pengeluaran();
+            break;
+        }
+    } while (pilih != 3);
+}
+
+//===MENU LIHAT DATA===
+void menuLihatData() {
+    int pilih;
+
+    do {
+        system("cls");
+
+        cout << "===== LIHAT DATA =====" << endl;
+        cout << "1. Pemasukan" << endl;
+        cout << "2. Pengeluaran" << endl;
+        cout << "3. Kembali" << endl;
+        cout << "Pilihan : ";
+        cin >> pilih;
+
+        switch (pilih) {
+
+        case 1:
+            liatpemasukan();
+            break;
+        case 2:
+            liatpengeluaran();
+            break;
+        }
+    } while (pilih != 3);
+}
+
+//===MENU CARI DATA===
+void menuCariData() {
+    int pilih;
+
+    do {
+        system("cls");
+
+        cout << "===== CARI DATA =====" << endl;
+        cout << "1. Cari Berdasarkan Nama" << endl;
+        cout << "2. Cari Berdasarkan Tanggal" << endl;
+        cout << "3. Kembali" << endl;
+        cout << "Pilihan : ";
+        cin >> pilih;
+
+        switch (pilih) {
+
+    	case 1:
+		  	int jenisNama;
+	
+		    cout << endl;
+		    cout << "1. Cari Pemasukan" << endl;
+		    cout << "2. Cari Pengeluaran" << endl;
+		    cout << "Pilihan : ";
+		    cin >> jenisNama;
+	
+		    if (jenisNama == 1) {
+		        cariNamaPemasukan();
+		    }
+		    else if (jenisNama == 2) {
+		        cariNamaPengeluaran();
+		    }
+		    break;
+
+        case 2:
+            int jenis;
+
+            cout << endl;
+            cout << "1. Cari Pemasukan" << endl;
+            cout << "2. Cari Pengeluaran" << endl;
+            cout << "Pilihan : ";
+            cin >> jenis;
+
+            if (jenis == 1) {
+                cariPemasukan();
+            }
+            else if (jenis == 2) {
+                cariPengeluaran();
+            }
+            break;
+        
+        default:
+			cout << "Pilihan tidak valid!" << endl;
+			system("pause");
+			break;
+        }
+    } while (pilih != 3);
+}
+
+
+//===MENU KEUANGAN TOKO===
+void menuKeuanganToko() {
+    int pilih;
+
+    do {
+        system("cls");
+
+        cout << "===== KEUANGAN TOKO =====" << endl;
+        cout << "1. Pemasukan Terbesar" << endl;
+        cout << "2. Pengeluaran Terbesar" << endl;
+        cout << "3. Lihat Saldo" << endl;
+        cout << "4. Laporan Keuangan" << endl;
+        cout << "5. Kembali" << endl;
+        cout << "Pilihan : ";
+        cin >> pilih;
+
+        switch (pilih) {
+
+       	case 1:
+			pemasukanTerbesar();
+		    break;
+    	case 2:
+		    pengeluaranTerbesar();
+		    break;
+       	case 3:
+		    lihatSaldo();
+		    break;
+        case 4:
+            keuntungan();
+            break;
+        }
+    } while (pilih != 5);
+}
+
+
+//===MENU REKAB DATA===
+void menuRekapData() {
+    int pilih;
+
+    do {
+        system("cls");
+
+        cout << "===== REKAP DATA =====" << endl;
+        cout << "1. Rekap Bulanan" << endl;
+        cout << "2. Rekap Tahunan" << endl;
+        cout << "3. Kembali" << endl;
+        cout << "Pilihan : ";
+        cin >> pilih;
+
+        switch (pilih) {
+
+        case 1:
+		    rekapBulanan();
+		    break;
+       	case 2:
+		    rekapTahunan();
+		    break;
+        }
+    } while (pilih != 3);
+}
+
+public:
+    
+void jalankanKeuangan() {
+    int pilih;
+
+    do {
+        system("cls");
+
+        cout << "========== ADMIN KEUANGAN ==========" << endl;
+        cout << "1. Input Data" << endl;
+        cout << "2. Lihat Data" << endl;
+        cout << "3. Cari Data" << endl;
+        cout << "4. Keuangan Toko" << endl;
+        cout << "5. Rekap Data" << endl;
+        cout << "6. Kembali" << endl;
+        cout << "Pilihan : ";
+        cin >> pilih;
+
+        switch (pilih) {
+
+        case 1:
+            menuInputData();
+            break;
+        case 2:
+            menuLihatData();
+            break;
+        case 3:
+            menuCariData();
+            break;
+        case 4:
+            menuKeuanganToko();
+            break;
+        case 5:
+            menuRekapData();
+            break;
+        }
+    } while (pilih != 6);
+ }
 };
+//================================
+//=======SELESAI KEUANGAN=========
+//================================
+
+
+
+
+
+
+
+
+
+
 
 
 // === CLASS ADMIN GUDANG ===
@@ -829,7 +1432,6 @@ private:
 
 
     void BarangMasuk() {
-        system("cls");
         operasi totalBarang[1000];
         int jumlahData = loadData(totalBarang); 
         
@@ -900,14 +1502,29 @@ private:
                 getline(cin, totalBarang[jumlahData].distributorBarang);
                 cout << "Kategori Barang      : " << endl; 
                 getline(cin, totalBarang[jumlahData].kategoriBarang);
-                cout << "Kode Barang          : " << endl; 
-                cin >> totalBarang[jumlahData].kodeBarang;
+                int m = 1000;
+                for (int i = 0; i < jumlahData; i++) {
+                    int c = strToInt(totalBarang[i].kodeBarang);
+                    if (c > m) {
+                        m = c; 
+                    }
+            	}
+                totalBarang[jumlahData].kodeBarang = "KB" + to_string(m + 1);
+                cout << "Kode Barang (Otomatis): " << totalBarang[jumlahData].kodeBarang << endl;
                 cout << "Harga Beli Barang    : Rp. " << endl; 
                 cin >> totalBarang[jumlahData].hargaBeli;
                 cout << "Harga Jual Barang    : Rp. " << endl; 
                 cin >> totalBarang[jumlahData].hargaJual;
                 cout << "Jumlah Barang        : " << endl; 
                 cin >> totalBarang[jumlahData].jumlahBarang;
+                
+                totalBarang[jumlahData].kodeRak = r;
+
+                ofstream tulisMasuk("Log_Masuk.txt", ios::app);
+                if (tulisMasuk.is_open()) {
+                    tulisMasuk << totalBarang[jumlahData].namaBarang << "|" << totalBarang[jumlahData].jumlahBarang << endl;
+                    tulisMasuk.close();
+                }
                 
                 totalBarang[jumlahData].kodeRak = r; 
                 jumlahData++;
@@ -1123,6 +1740,38 @@ private:
         system("pause");
     }
     
+    
+    void tampilkanLaporanMutasiBarang() {
+    system("cls");
+    string nama, jumlah, info;
+    cout << "=======================================" << endl;
+    cout << "       LAPORAN HISTORI BARANG MASUK    " << endl;
+    cout << "=======================================" << endl;
+    ifstream bacaMasuk("Log_Masuk.txt");
+    if (bacaMasuk.is_open()) {
+        while (getline(bacaMasuk, nama, '|') && getline(bacaMasuk, jumlah)) {
+            cout << "Barang: " << nama << " | Jumlah Masuk: " << jumlah << " pcs" << endl;
+        }
+        bacaMasuk.close();
+    } else {
+        cout << "Belum ada riwayat barang masuk." << endl;
+    }
+    cout << "=======================================" << endl;
+    cout << "       LAPORAN HISTORI BARANG KELUAR   " << endl;
+    cout << "=======================================" << endl;
+    ifstream bacaKeluar("Log_Keluar.txt");
+    if (bacaKeluar.is_open()) {
+        while (getline(bacaKeluar, nama, '|') && getline(bacaKeluar, jumlah, '|') && getline(bacaKeluar, info)) {
+            cout << "Barang: " << nama << " | Jumlah Keluar: " << jumlah << " pcs | Waktu/Ket: " << info << endl;
+        }
+        bacaKeluar.close();
+    } else {
+        cout << "Belum ada riwayat barang keluar." << endl;
+    }
+    cout << "=======================================" << endl;
+    system("pause");
+}
+    
 
 
 public:
@@ -1135,19 +1784,32 @@ public:
             cout << "2. Klasifikasi Kategori" << endl;
             cout << "3. Manajemen Stok Minimum" << endl;
             cout << "4. Lihat Data Barang" << endl;
+            cout << "5. Lihat Laporan Barang " << endl;
             cout << "6. Kembali ke Login" << endl;
             cout << "Pilihan: " << endl; 
             cin >> PilihFG;
 
             switch (PilihFG) {
-                case 1: KartuStok(); break;
-                case 2: KKategori(); break;
-                case 3: SMinimum(); break;
-                case 4: lihatBarang(); break;
+             	    case 1: 
+        				KartuStok(); 
+        				break;
+    				case 2: 
+        				KKategori(); 
+        				break;
+    				case 3: 
+        				SMinimum(); 
+        				break;
+    				case 4: 
+        				lihatBarang(); 
+        				break;
+    				case 5:
+        				tampilkanLaporanMutasiBarang();
+        				break;
             }
         } while (PilihFG != 6);
     }
 };
+
 
 // === FUNGSI BELANJA ONLINE (PELANGGAN) ===
 void belanjaOnline() {
