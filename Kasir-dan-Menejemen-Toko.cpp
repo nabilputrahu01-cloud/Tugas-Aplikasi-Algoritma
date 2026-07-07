@@ -25,33 +25,34 @@ public:
             time_t t = time(0);
             struct tm* now = localtime(&t);
             
-            cout << "========================================" << endl;
-            cout << "          SISTEM WAKTU GUDANG           " << endl;
-            cout << "========================================" << endl;
+            cout << "=================================================================" << endl;
+            cout << "|			SISTEM WAKTU GUDANG			|" << endl;
+            cout << "=================================================================" << endl;
             
            
-            cout << "Jam Digital Laptop : ";
+            cout << "|		Jam Digital Laptop : ";
             if (now->tm_hour < 10) cout << "0"; cout << now->tm_hour << ".";
             if (now->tm_min < 10) cout << "0";  cout << now->tm_min << ".";
-            if (now->tm_sec < 10) cout << "0";  cout << now->tm_sec << endl;
+            if (now->tm_sec < 10) cout << "0";  cout << now->tm_sec << "			|" << endl;
             
-            cout << "----------------------------------------" << endl;
-            cout << "INFORMASI JADWAL SHIFT AKTIF:" << endl;
-            cout << "- Shift Pagi  : 04.00 - 12.00 (User: Nabil | Pw: #132)" << endl;
-            cout << "- Shift Siang : 12.00 - 20.00 (User: nabil | Pw: #123)" << endl;
-            cout << "- Shift Malam : 20.00 - 04.00 (User: NABIL | Pw: #321)" << endl;
-            cout << "----------------------------------------" << endl;
+            cout << "-----------------------------------------------------------------" << endl;
+            cout << "|	INFORMASI JADWAL SHIFT AKTIF:				|" << endl;
+            cout << "|	- Shift Pagi  : 04.00 - 12.00 (User: Nabil | Pw: #132)	|" << endl;
+            cout << "|	- Shift Siang : 12.00 - 20.00 (User: nabil | Pw: #123)	|" << endl;
+            cout << "|	- Shift Malam : 20.00 - 04.00 (User: NABIL | Pw: #321)	|" << endl;
+            cout << "-----------------------------------------------------------------" << endl;
             
             
-            cout << "Shift Anda Saat Ini : ";
+            cout << "|		Shift Anda Saat Ini : ";
             if (now->tm_hour >= 4 && now->tm_hour < 12) {
-                cout << "PAGI" << endl;
+                cout << "PAGI";
             } else if (now->tm_hour >= 12 && now->tm_hour < 20) {
-                cout << "SIANG" << endl;
+                cout << "SIANG";
             } else {
-                cout << "MALAM" << endl;
+                cout << "MALAM";
             }
-            cout << "========================================" << endl;
+            cout << "			|" << endl;
+            cout << "=================================================================" << endl;
         } else {
             cout << "--- Verifikasi Akun Karyawan ---" << endl;
         }
@@ -1382,6 +1383,8 @@ private:
         return num;
     }
 
+
+	
     int loadData(operasi barang[]) {
         ifstream filebaca("Data Gudang.txt");
         string line;
@@ -1413,7 +1416,8 @@ private:
         return count;
     }
 
-
+	
+	//=== Menyimpan Data ===
     void saveData(operasi barang[], int totalData) {
         ofstream filemasuk("Data Gudang.txt"); 
         if (filemasuk) {
@@ -1431,6 +1435,7 @@ private:
     }
 
 
+	//=== Barang Masuk ===
     void BarangMasuk() {
         operasi totalBarang[1000];
         int jumlahData = loadData(totalBarang); 
@@ -1496,26 +1501,51 @@ private:
                 }
                 cout << "[Rak " << r << "] Mengisi Slot ke-" << counter + 1 << "/" << slotPerRak << endl;
                 cin.ignore();
-                cout << "Nama Barang          : " << endl; 
+                cout << "Nama Barang          : "; 
                 getline(cin, totalBarang[jumlahData].namaBarang);
-                cout << "Distributor Barang   : " << endl; 
+                cout << "Distributor Barang   : "; 
                 getline(cin, totalBarang[jumlahData].distributorBarang);
-                cout << "Kategori Barang      : " << endl; 
+                cout << "Kategori Barang      : "; 
                 getline(cin, totalBarang[jumlahData].kategoriBarang);
-                int m = 1000;
-                for (int i = 0; i < jumlahData; i++) {
-                    int c = strToInt(totalBarang[i].kodeBarang);
-                    if (c > m) {
-                        m = c; 
+                
+                
+               string kodeOto = "KB";
+                int urutan = 1;
+
+                if (jumlahData > 0) {
+                    string kodeTerakhir = totalBarang[jumlahData - 1].kodeBarang;
+                    if (kodeTerakhir.length() >= 6 && kodeTerakhir.substr(0, 3) == "KB") {
+                        string angkaS = kodeTerakhir.substr(3);
+                        urutan = strToInt(angkaS) + 1;
+                    } else {
+                        urutan = jumlahData + 1;
                     }
-            	}
-                totalBarang[jumlahData].kodeBarang = "KB" + to_string(m + 1);
-                cout << "Kode Barang (Otomatis): " << totalBarang[jumlahData].kodeBarang << endl;
-                cout << "Harga Beli Barang    : Rp. " << endl; 
+                }
+                
+                if (urutan < 10) {
+                    kodeOto += "00";
+                } else if (urutan < 100) {
+                    kodeOto += "0";
+                }
+                
+                string angkaStr = "";
+                int temp = urutan;
+                while (temp > 0) {
+                    angkaStr = char((temp % 10) + '0') + angkaStr;
+                    temp /= 10;
+                }
+                if (angkaStr.empty()) {
+                    angkaStr = "0";
+                }
+                kodeOto += angkaStr;
+
+                totalBarang[jumlahData].kodeBarang = kodeOto;
+                cout << "Kode Barang          : " << totalBarang[jumlahData].kodeBarang << endl;   
+                cout << "Harga Beli Barang    : Rp. "; 
                 cin >> totalBarang[jumlahData].hargaBeli;
-                cout << "Harga Jual Barang    : Rp. " << endl; 
+                cout << "Harga Jual Barang    : Rp. "; 
                 cin >> totalBarang[jumlahData].hargaJual;
-                cout << "Jumlah Barang        : " << endl; 
+                cout << "Jumlah Barang        : "; 
                 cin >> totalBarang[jumlahData].jumlahBarang;
                 
                 totalBarang[jumlahData].kodeRak = r;
@@ -1550,6 +1580,7 @@ private:
     }
 
 
+	//=== Mencari Barang ===
     void cariBarang() {
         system("cls");
         operasi barang[1000];
@@ -1587,7 +1618,7 @@ private:
         system("pause");
     }
 
-
+	//=== Ketika Ada Kesalahan Jumlah Stok Barang di Rill dan DI input ===
     void penyesuaianStok() {
         system("cls");
         operasi barang[1000];
@@ -1627,6 +1658,7 @@ private:
     }
 
 
+	//=== Pilihan Kelola Barang ===
     void KartuStok() {
         int PilihKS;
         do {
@@ -1646,6 +1678,7 @@ private:
     }
 
 
+	//=== Lihat Barang ===
     void lihatBarang() {
         system("cls");
         ifstream filebaca("Data Gudang.txt");
@@ -1668,39 +1701,77 @@ private:
     }
 
 
-    void SMinimum() {
+	//=== Pengingat Barang yang Stok Paling Sedikit ===
+    void peringatanMinimum() {
+        operasi totalBarang[1000];
+        int jumlahData = loadData(totalBarang);
+
         system("cls");
-        operasi barang[1000];
-        int totalData = loadData(barang);
+        cout << "=================================================================" << endl;
+        cout << "|\t\t  LAPORAN AMBANG BATAS STOK MINIMUM\t\t|" << endl;
+        cout << "=================================================================" << endl;
+        cout << "[SISTEM]: Menampilkan barang dengan kuantitas kritis (stok <= 5).\n" << endl;
 
-        cout << "=== MANAJEMEN STOK MINIMUM (ALERT) ===" << endl;
-        if (totalData == 0) {
-            cout << "[SISTEM]: Belum ada data barang di gudang." << endl;
-            system("pause");
-            return;
-        }
+        bool adaKritis = false;
+        int nomor = 1;
 
-        int batasAman = 5; 
-        bool adaPeringatan = false;
+        for (int i = 0; i < jumlahData; i++) {
+            
+            if (totalBarang[i].jumlahBarang <= 5) {
+                adaKritis = true;
 
-        cout << "Daftar Barang dengan Stok Kritis (< " << batasAman << " pcs):" << endl;
-        cout << "--------------------------------------------------" << endl;
-        for (int i = 0; i < totalData; i++) {
-            if (barang[i].jumlahBarang < batasAman) {
-                cout << "[ALERT] " << barang[i].namaBarang 
-                     << " (Kode: " << barang[i].kodeBarang << ")"
-                     << " -> Sisa: " << barang[i].jumlahBarang << " pcs [Lokasi: Rak " << barang[i].kodeRak << "]" << endl;
-                adaPeringatan = true;
+                cout << nomor << ". Kode Barang : " << totalBarang[i].kodeBarang << endl;
+                cout << "   Nama Barang : " << totalBarang[i].namaBarang << endl;
+                cout << "   Sisa Stok   : " << totalBarang[i].jumlahBarang << " pcs (KRITIS!)" << endl;
+                cout << "   Distributor : " << totalBarang[i].distributorBarang << endl;
+
+                
+                
+                
+                ifstream fileSupplier("Data_Supplier.txt");
+                string line, idSup, namaSup, kontakSup;
+                bool kontakDitemukan = false;
+
+                if (fileSupplier.is_open()) {
+                    while (getline(fileSupplier, line)) {
+                        if (line.empty()) continue;
+                        size_t p1 = line.find("|");
+                        size_t p2 = line.find("|", p1 + 1);
+
+                        if (p1 != string::npos && p2 != string::npos) {
+                            idSup = line.substr(0, p1);
+                            namaSup = line.substr(p1 + 1, p2 - p1 - 1);
+                            kontakSup = line.substr(p2 + 1);
+
+                            
+                            if (totalBarang[i].distributorBarang == namaSup || totalBarang[i].distributorBarang == idSup) {
+                                cout << "   -> REKOMENDASI: Hubungi " << namaSup << " (" << kontakSup << ") untuk restock." << endl;
+                                kontakDitemukan = true;
+                                break;
+                            }
+                        }
+                    }
+                    fileSupplier.close();
+                }
+
+                if (!kontakDitemukan) {
+                    cout << "   -> REKOMENDASI: [Peringatan] Detail kontak supplier belum terdaftar di Data_Supplier.txt!" << endl;
+                }
+                
+
+                cout << "-----------------------------------------------------------------" << endl;
+                nomor++;
             }
         }
-        cout << "--------------------------------------------------" << endl;
-        if (!adaPeringatan) {
-            cout << "[SISTEM]: Ketersediaan seluruh aman. Stok di atas " << batasAman << " pcs." << endl;
+
+        if (!adaKritis) {
+            cout << "[SISTEM]: Kuantitas aman! Seluruh stok barang di gudang masih tercukupi." << endl;
         }
         system("pause");
     }
 
-
+	
+	//=== Lihat Barang Sesuai Kategori ===
     void KKategori() { 
         system("cls");
         operasi barang[1000];
@@ -1741,40 +1812,360 @@ private:
     }
     
     
+    //=== Menampilkan Data Barang Masuk Dan Barang Keluar ===
     void tampilkanLaporanMutasiBarang() {
-    system("cls");
-    string nama, jumlah, info;
-    cout << "=======================================" << endl;
-    cout << "       LAPORAN HISTORI BARANG MASUK    " << endl;
-    cout << "=======================================" << endl;
-    ifstream bacaMasuk("Log_Masuk.txt");
-    if (bacaMasuk.is_open()) {
-        while (getline(bacaMasuk, nama, '|') && getline(bacaMasuk, jumlah)) {
-            cout << "Barang: " << nama << " | Jumlah Masuk: " << jumlah << " pcs" << endl;
-        }
-        bacaMasuk.close();
-    } else {
-        cout << "Belum ada riwayat barang masuk." << endl;
-    }
-    cout << "=======================================" << endl;
-    cout << "       LAPORAN HISTORI BARANG KELUAR   " << endl;
-    cout << "=======================================" << endl;
-    ifstream bacaKeluar("Log_Keluar.txt");
-    if (bacaKeluar.is_open()) {
-        while (getline(bacaKeluar, nama, '|') && getline(bacaKeluar, jumlah, '|') && getline(bacaKeluar, info)) {
-            cout << "Barang: " << nama << " | Jumlah Keluar: " << jumlah << " pcs | Waktu/Ket: " << info << endl;
-        }
-        bacaKeluar.close();
-    } else {
-        cout << "Belum ada riwayat barang keluar." << endl;
-    }
-    cout << "=======================================" << endl;
-    system("pause");
-}
+    	system("cls");
+    	string nama, jumlah, info;
+    	cout << "=======================================" << endl;
+    	cout << "       LAPORAN HISTORI BARANG MASUK    " << endl;
+    	cout << "=======================================" << endl;
+    	ifstream bacaMasuk("Log_Masuk.txt");
+    		if (bacaMasuk.is_open()) {
+        		while (getline(bacaMasuk, nama, '|') && getline(bacaMasuk, jumlah)) {
+        	    cout << "Barang: " << nama << " | Jumlah Masuk: " << jumlah << " pcs" << endl;
+        	}
+        	bacaMasuk.close();
+    		} else {
+    	    cout << "Belum ada riwayat barang masuk." << endl;
+    	}
+    	cout << "=======================================" << endl;
+    	cout << "       LAPORAN HISTORI BARANG KELUAR   " << endl;
+    	cout << "=======================================" << endl;
+    	ifstream bacaKeluar("Log_Keluar.txt");
+    		if (bacaKeluar.is_open()) {
+    		    while (getline(bacaKeluar, nama, '|') && getline(bacaKeluar, jumlah, '|') && getline(bacaKeluar, info)) {
+    	        cout << "Barang: " << nama << " | Jumlah Keluar: " << jumlah << " pcs | Waktu/Ket: " << info << endl;
+    	    }
+    	    bacaKeluar.close();
+    		} else {
+        	cout << "Belum ada riwayat barang keluar." << endl;
+    		}
+    		cout << "=======================================" << endl;
+   		system("pause");
+	}
     
+    
+    //=== Tambah Supplier ===
+    void tambahSupplier() {
+        string idSupplier, namaSupplier, kontak;
+        system("cls");
+        cout << "=========================================" << endl;
+        cout << "         INPUT DATA SUPPLIER BARU        " << endl;
+        cout << "=========================================" << endl;
+        
+        cout << "Masukkan ID Supplier (contoh: SPL01): ";
+        cin >> idSupplier;
+        cout << "Masukkan Nama Perusahaan Supplier: ";
+        cin.ignore();
+        getline(cin, namaSupplier);
+        cout << "Masukkan Kontak/No Telp: ";
+        getline(cin, kontak);
+
+        
+        ofstream file("Data_Supplier.txt", ios::app);
+        if (file.is_open()) {
+            file << idSupplier << "|" << namaSupplier << "|" << kontak << endl;
+            file.close();
+            cout << "\n[SISTEM]: Supplier berhasil didaftarkan!" << endl;
+        } else {
+            cout << "\n[SISTEM]: Gagal membuka file Data_Supplier.txt!" << endl;
+        }
+        system("pause");
+    }
+    
+    
+    //=== Barang Yang di Pasok Oleh Supplier ===
+    void pasokBarangDariSupplier() {
+        operasi daftarBarang[1000];
+        int jumlahData = loadData(daftarBarang);
+
+        system("cls");
+        cout << "=========================================" << endl;
+        cout << "        PASOKAN BARANG DARI SUPPLIER     " << endl;
+        cout << "=========================================" << endl;
+
+        string kodeBarang, idSupplier;
+        int jumlahMasuk;
+
+        cout << "Masukkan Kode Barang yang ingin dipasok (contoh: KB0001): ";
+        cin >> kodeBarang;
+
+        bool barangDitemukan = false;
+        for (int i = 0; i < jumlahData; i++) {
+            if (daftarBarang[i].kodeBarang == kodeBarang) {
+                barangDitemukan = true;
+                
+                cout << "-> Barang Ditemukan: " << daftarBarang[i].namaBarang << endl;
+                cout << "-> Stok Saat Ini   : " << daftarBarang[i].jumlahBarang << " pcs" << endl;
+                cout << "-----------------------------------------" << endl;
+
+                cout << "Masukkan ID Supplier Pemasok : ";
+                cin >> idSupplier;
+                cout << "Masukkan Jumlah Stok Masuk   : ";
+                cin >> jumlahMasuk;
+
+                if (jumlahMasuk <= 0) {
+                    cout << "\n[SISTEM]: Jumlah masuk tidak valid!" << endl;
+                    system("pause");
+                    return;
+                }
+
+               
+                daftarBarang[i].jumlahBarang += jumlahMasuk;
+                saveData(daftarBarang, jumlahData);
+
+                
+                ofstream log("Log_Masuk.txt", ios::app);
+                if (log.is_open()) {
+                    log << daftarBarang[i].namaBarang << "|" << jumlahMasuk << "|Pemasok: " << idSupplier << endl;
+                    log.close();
+                }
+                
+                cout << "\n[SISTEM]: Stok berhasil ditambah dari Supplier " << idSupplier << "!" << endl;
+                break;
+            }
+        }
+
+        if (!barangDitemukan) {
+            cout << "\n[SISTEM]: Barang dengan kode " << kodeBarang << " tidak ditemukan di gudang!" << endl;
+        }
+        system("pause");
+    }
+    
+    
+    //=== Lihat Barang Setiap Rak ===
+    void lihatBarangPerRak() {
+        operasi totalBarang[1000];
+        int jumlahData = loadData(totalBarang);
+
+        system("cls");
+        cout << "=================================================================" << endl;
+        cout << "|\t\tCARI DAFTAR BARANG BERDASARKAN RAK\t\t|" << endl;
+        cout << "=================================================================" << endl;
+
+        if (jumlahData == 0) {
+            cout << "[SISTEM]: Belum ada data barang di gudang." << endl;
+            system("pause");
+            return;
+        }
+
+        int rakTarget;
+        cout << "Masukkan Nomor Rak yang ingin dicari (Contoh: 1, 2, dst): ";
+        cin >> rakTarget;
+
+        system("cls");
+        cout << "======================================================" << endl;
+        cout << "|\t\t   DAFTAR BARANG DI RAK NOMOR " << rakTarget << endl;
+        cout << "======================================================" << endl;
+        cout << "+====================================================+" << endl;
+        
+
+        bool barangDitemukan = false;
+        int nomor = 1;
+
+       
+        for (int i = 0; i < jumlahData; i++) {
+            if (totalBarang[i].kodeRak == rakTarget) {
+                barangDitemukan = true;
+                cout << "------------------------------------------------------" << endl;
+                cout << "|	Data Nomor-" << nomor << endl;
+                cout << "|	Kode Barang \t: " << totalBarang[i].kodeBarang << endl;
+                cout << "|	Nama Barang\t: " << totalBarang[i].namaBarang << endl;
+                cout << "|	Stok\t\t: " << totalBarang[i].jumlahBarang << endl;
+                cout << "|	Kategori\t: " << totalBarang[i].kategoriBarang << endl;
+                cout << "------------------------------------------------------" << endl;
+                nomor++;
+            }
+        }
+
+        cout << "+====================================================+" << endl;
+
+        if (!barangDitemukan) {
+            cout << "\n[SISTEM]: Tidak ada barang yang ditempatkan di Rak " << rakTarget << ".\n" << endl;
+        }
+
+        system("pause");
+    }
+    
+    
+    //=== Lihat Semua Data Supplier ===
+    void lihatSemuaSupplier() {
+        system("cls");
+        cout << "======================================================" << endl;
+        cout << "|\t\tDAFTAR MASTER DATA SUPPLIER\t     |" << endl;
+        cout << "======================================================" << endl;
+
+        ifstream fileSup("Data_Supplier.txt");
+        string line;
+        int nomor = 1;
+        bool adaSupplier = false;
+
+        if (fileSup.is_open()) {
+            while (getline(fileSup, line)) {
+                if (line.empty()) continue;
+
+                size_t p1 = line.find("|");
+                size_t p2 = line.find("|", p1 + 1);
+
+                if (p1 != string::npos && p2 != string::npos) {
+                    adaSupplier = true;
+                    string idSup = line.substr(0, p1);
+                    string namaSup = line.substr(p1 + 1, p2 - p1 - 1);
+                    string kontakSup = line.substr(p2 + 1);
+
+                    
+                    cout << "------------------------------------------------------" << endl;
+                    cout << "|\tData Nomor-" << nomor << endl;
+                    cout << "|\tID Supplier\t: " << idSup << endl;
+                    cout << "|\tNama Toko/PT\t: " << namaSup << endl;
+                    cout << "|\tKontak/Telp\t: " << kontakSup << endl;
+                    cout << "------------------------------------------------------" << endl;
+                    nomor++;
+                }
+            }
+            fileSup.close();
+        }
+
+        if (!adaSupplier) {
+            cout << "\n[SISTEM]: Belum ada supplier yang terdaftar di database.\n" << endl;
+        }
+        system("pause");
+    }
+    
+    
+    //=== Membatalkan Kerjasama Dengan Suplier ===
+    void batalkanSupplier() {
+        system("cls");
+        cout << "======================================================" << endl;
+        cout << "|\t   PEMBATALAN / HAPUS MITRA SUPPLIER\t     |" << endl;
+        cout << "======================================================" << endl;
+
+        ifstream fileSup("Data_Supplier.txt");
+        if (!fileSup.is_open()) {
+            cout << "[SISTEM]: Gagal membuka database supplier atau data masih kosong." << endl;
+            system("pause");
+            return;
+        }
+
+        string idTarget;
+        cout << "Masukkan ID Supplier yang ingin dibatalkan kerja samanya: ";
+        cin >> idTarget;
+
+        ofstream fileTemp("Data_Supplier_Temp.txt");
+        string line;
+        bool ditemukan = false;
+
+        while (getline(fileSup, line)) {
+            if (line.empty()) continue;
+
+            size_t p1 = line.find("|");
+            if (p1 != string::npos) {
+                string idSup = line.substr(0, p1);
+
+                
+                if (idSup == idTarget) {
+                    ditemukan = true;
+                    size_t p2 = line.find("|", p1 + 1);
+                    string namaSup = line.substr(p1 + 1, p2 - p1 - 1);
+                    cout << "\n[INFO]: Berhasil membatalkan kerja sama dengan [" << namaSup << "]." << endl;
+                    continue; 
+                }
+            }
+            
+            fileTemp << line << endl;
+        }
+
+        fileSup.close();
+        fileTemp.close();
+
+        
+        if (ditemukan) {
+            remove("Data_Supplier.txt");
+            rename("Data_Supplier_Temp.txt", "Data_Supplier.txt");
+        } else {
+            remove("Data_Supplier_Temp.txt"); 
+            cout << "\n[EROR]: ID Supplier '" << idTarget << "' tidak ditemukan di database!" << endl;
+        }
+
+        system("pause");
+    }
+    
+    
+    //=== Mengurutkan Stok Paling Sedikit ===
+    void urutkanStokTersedikit() {
+        operasi totalBarang[1000];
+        int jumlahData = loadData(totalBarang);
+
+        system("cls");
+        cout << "======================================================" << endl;
+        cout << "|\t URUTAN STOK BARANG TERSEDIKIT -> TERBANYAK   |" << endl;
+        cout << "======================================================" << endl;
+
+        if (jumlahData == 0) {
+            cout << "[SISTEM]: Belum ada data barang di gudang." << endl;
+            system("pause");
+            return;
+        }
+
+        
+        for (int i = 0; i < jumlahData - 1; i++) {
+            for (int j = 0; j < jumlahData - i - 1; j++) {
+                
+                if (totalBarang[j].jumlahBarang > totalBarang[j + 1].jumlahBarang) {
+                    
+                    operasi temp = totalBarang[j];
+                    totalBarang[j] = totalBarang[j + 1];
+                    totalBarang[j + 1] = temp;
+                }
+            }
+        }
+
+        
+        int nomor = 1;
+        for (int i = 0; i < jumlahData; i++) {
+            cout << "------------------------------------------------------" << endl;
+            cout << "|\tData Nomor-" << nomor << endl;
+            cout << "|\tKode Barang \t: " << totalBarang[i].kodeBarang << endl;
+            cout << "|\tNama Barang\t: " << totalBarang[i].namaBarang << endl;
+            cout << "|\tStok\t\t: " << totalBarang[i].jumlahBarang << " pcs" << endl;
+            cout << "|\tKategori\t: " << totalBarang[i].kategoriBarang << endl;
+            cout << "|\tLokasi Rak\t: Rak " << totalBarang[i].kodeRak << endl;
+            cout << "------------------------------------------------------" << endl;
+            nomor++;
+        }
+
+        system("pause");
+    }
+    
+    
+    //=== Pilihann Menu Menejemen Stok Minimum ===
+    void SMinimum(){
+    	system("cls");
+    	int angka;
+    	cout << "Pilihan :" <<endl;
+    	cout << " 1. Peringatan Stok yang Harus di Isi Ulang." << endl;
+    	cout << " 2. Urutan Stok Paling Sedikit." << endl;
+    	cout << " 0. Kembali Ke Pilihan" << endl;
+    	cout << " Masukan Pilihan :";
+    	cin >> angka;
+    	
+    	do{
+    		switch(angka){
+    		case 1:
+    			peringatanMinimum();
+    			break;
+    		case 2:
+    			urutkanStokTersedikit();
+    			break;
+    		default : 
+    			cout << "Maaf Pilihan Tidak Ada";
+			}
+		}while(angka != 0);
+	}
 
 
 public:
+	//=== Menu Utama Admin Gudang ===
     void jalankanGudang() {
         int PilihFG;
         do {
@@ -1785,7 +2176,12 @@ public:
             cout << "3. Manajemen Stok Minimum" << endl;
             cout << "4. Lihat Data Barang" << endl;
             cout << "5. Lihat Laporan Barang " << endl;
-            cout << "6. Kembali ke Login" << endl;
+            cout << "6. Lihat Barang Berdasarkan Rak" << endl;   
+            cout << "7. Tambah Data Supplier Baru" << endl;
+            cout << "8. Pasok Stok Barang dari Supplier" << endl;
+            cout << "9. Lihat Supplier" << endl;
+            cout << "10 Hapus Supplier" << endl;
+            cout << "0. Kembali ke Login" << endl;
             cout << "Pilihan: " << endl; 
             cin >> PilihFG;
 
@@ -1805,8 +2201,26 @@ public:
     				case 5:
         				tampilkanLaporanMutasiBarang();
         				break;
+        			case 6:
+        				lihatBarangPerRak();
+        				break;
+        			case 7:
+        				tambahSupplier();
+        				break;
+        			case 8:
+        				pasokBarangDariSupplier();
+        				break;
+        			case 9 :
+        				lihatSemuaSupplier();
+        				break;
+        			case 10:
+        				batalkanSupplier();
+        				break;
+        			default:
+        				cout << "Maaf Pilihan " << PilihFG << " Tidak Ada" << endl;
+        				break;
             }
-        } while (PilihFG != 6);
+        } while (PilihFG != 0);
     }
 };
 
@@ -1960,14 +2374,26 @@ int main() {
 
     do {
         system("cls");
-        cout << "+=====================================+" << endl;
-        cout << "|       Selamat Datang di Toko        |" << endl;
-        cout << "+=====================================+" << endl;
-        cout << "1. Pelanggan" << endl;
-        cout << "2. Karyawan" << endl;
-        cout << "3. Keluar Aplikasi" << endl;
-        cout << "Masukkan Pilihan : " ; 
+        cout << "+===============================================================================+" << endl;
+        cout << "|										|" << endl;
+        cout << "|      			 Selamat Datang di Toko Tiga				|" << endl;
+        cout << "|										|" << endl;
+        cout << "+===============================================================================+" << endl;
+        cout << "|										|" << endl;
+        cout << "|	Solusi Belanja Moderen di Jaringan Ritel Terbesar			|" << endl;
+        cout << "|	Sekarang Hadir dengan Sistem Pembelian Online yang Aman dan Praktis	|" << endl;
+        cout << "|										|" << endl;
+        cout << "+===============================================================================+" << endl;
+        cout << "|										|" << endl;
+        cout << "|	Selamat Pengguna Silahkan Memilih Pilihan yang Sudah di Sediakan	|" << endl;
+        cout << "|	1. Pelanggan								|" << endl;
+        cout << "|	2. Karyawan								|" << endl;
+        cout << "|	3. Keluar Aplikasi							|" << endl;
+        cout << "|										|" << endl;
+        cout << "+===============================================================================+" << endl;
+        cout << "	Masukkan Pilihan : " ; 
         cin >> menuUtama;
+        
 
         if (menuUtama == 3) break;
 
